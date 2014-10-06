@@ -1,0 +1,36 @@
+{
+"name": "zint-qr",
+"version": "0.0.1",
+"repository": {
+"type": "git",
+"url": "https://github.com/PROGrand/zint-qr"
+},
+"description": "clustered QR code renderer, based on zint native library.",
+"author": {
+"name": "Vladimir Koltunov",
+"email": "progrand@gmail.com"
+},
+"maintainers": [
+{
+"name": "progrand",
+"email": "progrand@gmail.com"
+}
+],
+"main": "zint-qr.js",
+"dependencies": {
+"express" : "*",
+"debug" : "*"
+},
+"keywords": [
+"qr",
+"zint",
+"express",
+"cluster"
+],
+"devDependencies": {
+},
+"engines": {
+"node": ">=0.10.0"
+},
+"license": "MIT"
+}
