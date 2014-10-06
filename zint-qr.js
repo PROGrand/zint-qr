@@ -12,11 +12,10 @@ module.exports.cluster = start_cluster;
 module.exports.zint = zint;
 module.exports.server = server;
 
-function start_cluster(options, callback, parser)
+function start_cluster(options, callback)
 {
 	if (typeof options === 'function')
 	{
-		parser = callback;
 		callback = options;
 		options = {};
 	}
@@ -24,10 +23,17 @@ function start_cluster(options, callback, parser)
 	options.workers = options.workers || process.env.ZINT_WORKERS || require('os').cpus().length;
 	options.type = options.type || process.env.ZINT_TYPE || 58;
 	options.scale = options.scale || process.env.ZINT_SCALE || 4;
+	options.port = options.port || process.env.ZINT_PORT || 5000;
+	options.route = options.route || process.env.ZINT_ROUTE || '/qr/:id';
+	options.parser = options.parser || function(req)
+		{
+			return req.param('id', '-');
+		};;
+	
 	
 	if (cluster.isMaster) {
 		
-		debug_log('*************** MASTER: ' + require('util').inspect(options, false, null));
+		debug_log('zint-qr server: ' + require('util').inspect(options, false, null));
 		
 		var fork_worker = function()
 		{
@@ -45,7 +51,7 @@ function start_cluster(options, callback, parser)
 			fork_worker();
 		});
 	} else if (cluster.isWorker) {
-		callback(options, parser);
+		callback(options);
 	}
 }
 
@@ -59,36 +65,26 @@ function zint(options, text) {
 }
 
 
-function worker(options, parser)
+function worker(options)
 {
 	var express = require('express');
 	var http = require('http');
 	var app = express();
 	var server = http.Server(app);
 	
-	app.get('/qr/:id', function(req, res) {
-		var png = zint(options, parser(req));
+	app.get(options.route, function(req, res) {
+		var png = zint(options, options.parser(req));
 		res.type('png');
 		png.stdout.pipe(res);
 	});
 
-	var port = process.env.ZINT_PORT || 5000;
-
-	server.listen(port, function() {
-		debug_log('zint-qr [' + cluster.worker.id + '] listening on port ' + port);
+	server.listen(options.port, function() {
+		debug_log('zint-qr [' + cluster.worker.id + '] listening on port ' + options.port);
 	});
 }
 
 
-function server(parser)
+function server(options)
 {
-	if ('function' !== typeof parser)
-	{
-		parser = function(req)
-		{
-			return JSON.stringify(req.param('id', '-'));
-		};
-	}
-	
-	start_cluster(worker, parser);
+	start_cluster(options, worker);
 }
