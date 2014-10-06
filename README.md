@@ -1,13 +1,15 @@
 # QR-code server based on zint 
 
-Simple qr-code renderer server using [zint](https://github.com/zint/zint) and [express](https://github.com/strongloop/express).
+Simple qr-code renderer server using [zint](http://zint.github.io/) and [express](https://github.com/strongloop/express).
 
 Supports multi-core CPUs through [cluster](http://nodejs.org/docs/latest/api/cluster.html).
 
 ## Installation
 
+### zint
+zint binary must be available through path. You can use prebuilt zint package or build it yourself (cmake and libpng required).
 
-
+### npm
 ```bash
 npm install zint-qr
 ```
