@@ -26,7 +26,7 @@ require('zint-qr').server();
 ```javascript
 var options = {
 	workers: 2, // total workers (default: cpu cores count).
-	pattern: '/qr/id:', // url pattern (express route) (default: '/qr/id:').
+	pattern: '/qr/:id', // url pattern (express route) (default: '/qr/:id').
 	port: 5000, // port, default (5000).
 	parser: function (req){ return 'id: ' + req.param('id', '-'); },
 	type: 58, // barcode type, according to zint documentation (default: 58 - QR).
