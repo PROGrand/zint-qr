@@ -14,7 +14,11 @@ module.exports.server = server;
 
 function start_cluster(options, callback)
 {
-	if (typeof options === 'function')
+	if (!options)
+	{
+		options = {};
+	}
+	else if (typeof options === 'function')
 	{
 		callback = options;
 		options = {};
